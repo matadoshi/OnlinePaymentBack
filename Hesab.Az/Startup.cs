@@ -51,6 +51,7 @@ namespace Hesab.Az
                 });
             });
             services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
+            services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>

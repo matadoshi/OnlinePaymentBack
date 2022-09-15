@@ -8,6 +8,6 @@ namespace Service.Interfaces
 {
     public interface ICategoryService
     {
-        Task<Category> GetService(int? id);
+        Task<Category> GetCategoryd(int? id);
     }
 }

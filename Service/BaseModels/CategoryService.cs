@@ -17,7 +17,7 @@ namespace Service.BaseModels
         {
             _categoryRepository = categoryRepository;
         }
-        public async Task<Category> GetService(int? id)
+        public async Task<Category> GetCategory(int? id)
         {
             Category category =await _categoryRepository.FirstOrDefault(id);
             return category;
