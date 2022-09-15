@@ -1,0 +1,31 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "4dd901c6-0607-439e-b0a2-023dcf54504c": {
+      "ProjectGuid": "4dd901c6-0607-439e-b0a2-023dcf54504c",
+      "DisplayName": "Hesab.Az",
+      "ColorIndex": 0
+    },
+    "277bbf71-0a8c-47dd-83a1-2372a5f46200": {
+      "ProjectGuid": "277bbf71-0a8c-47dd-83a1-2372a5f46200",
+      "DisplayName": "Service",
+      "ColorIndex": 1
+    },
+    "0370ba9f-f8c1-4537-b568-34c541a51edd": {
+      "ProjectGuid": "0370ba9f-f8c1-4537-b568-34c541a51edd",
+      "DisplayName": "Repository",
+      "ColorIndex": 2
+    },
+    "64938b9f-89c0-472f-b5ff-7f03ca57801e": {
+      "ProjectGuid": "64938b9f-89c0-472f-b5ff-7f03ca57801e",
+      "DisplayName": "DomainModels",
+      "ColorIndex": 3
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 4
+}
