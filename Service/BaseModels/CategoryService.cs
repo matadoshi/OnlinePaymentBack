@@ -12,16 +12,14 @@ namespace Service.BaseModels
 {
     public class CategoryService:ICategoryService
     {
-        private readonly IRepository<Category> _category;
-        public CategoryService(IRepository<Category> category)
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoryService(ICategoryRepository categoryRepository)
         {
-            _category = category;
+            _categoryRepository = categoryRepository;
         }
         public async Task<Category> GetService(int? id)
         {
-            Category category = await _category.GetAllAsync()
-                .Include(p => p.Attributes)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            Category category =await _categoryRepository.FirstOrDefault(id);
             return category;
         }
     }

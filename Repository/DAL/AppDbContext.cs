@@ -16,6 +16,8 @@ namespace Repository.DAL
         }
         public DbSet<Attributes> Attributes { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Slider> Sliders{ get; set; }
+        public DbSet<Customer> Customers{ get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

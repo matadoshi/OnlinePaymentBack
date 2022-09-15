@@ -11,12 +11,16 @@ namespace Hesab.Az.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        public readonly ICategoryService _categoryService;
-        public readonly IRepository<Category> _category;
-        public HomeController(ICategoryService categoryService, IRepository<Category> category)
+        private readonly ICategoryService _categoryService;
+        private readonly IRepository<Category> _category;
+        private readonly ISliderService _sliderService;
+        private readonly ICustomerService _customerService;
+        public HomeController(ICategoryService categoryService, IRepository<Category> category, ISliderService sliderService, ICustomerService customerService)
         {
             _categoryService = categoryService;
             _category = category;
+            _sliderService = sliderService;
+            _customerService = customerService;
         }
         [HttpGet()]
         public async Task<IActionResult> GetServices()
@@ -29,6 +33,16 @@ namespace Hesab.Az.Controllers
         {
             var services = await _categoryService.GetService(id);
             return Ok(services);
+        }
+        public async Task<IActionResult> GetSlider()
+        {
+            var slider =await _sliderService.GetSlider();
+            return Ok(slider);
+        }
+        public async Task<IActionResult> GetCustomer()
+        {
+            var customer = await _customerService.GetCustomers();
+            return Ok(customer);
         }
     }
 }

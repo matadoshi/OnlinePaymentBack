@@ -10,7 +10,7 @@ namespace Repository.Repository.Implementation
 {
     public class EfCoreRepository<T>: IRepository<T> where T : class
     {
-        private readonly AppDbContext Db;
+        protected readonly AppDbContext Db;
 
         public EfCoreRepository(AppDbContext db)
         {
