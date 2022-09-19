@@ -73,3 +73,10 @@ C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\obj\Debug\netcoreapp3.1\Hesa
 C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\obj\Debug\netcoreapp3.1\Hesab.Az.dll
 C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\obj\Debug\netcoreapp3.1\Hesab.Az.pdb
 C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\obj\Debug\netcoreapp3.1\Hesab.Az.genruntimeconfig.cache
+C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\obj\Debug\netcoreapp3.1\Hesab.Az.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\bin\Debug\netcoreapp3.1\AutoMapper.dll
+C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
+C:\Users\Onur\OneDrive\Masaüstü\Hesab.Az\Hesab.Az\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll

@@ -14,6 +14,7 @@ namespace Service
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISliderService, SliderService>();
             services.AddScoped<ICustomerService,CustomerService>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
     }

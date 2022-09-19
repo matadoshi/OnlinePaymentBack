@@ -1,4 +1,5 @@
 ﻿using DomainModels.PaymentModels;
+using Repository.Repository.Implementation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Repository.Repository.Interfaces
 {
     public interface ICategoryRepository:IRepository<Category>
     {
-        Task<Category> FirstOrDefault(int? id);
+        Task<IList<Category>> GetCategoriesWithAttributes();
+        Task<Category> GetCategoryById(int? id);
     }
 }

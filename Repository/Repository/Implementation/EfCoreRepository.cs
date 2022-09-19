@@ -3,6 +3,8 @@ using Repository.DAL;
 using Repository.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,25 +12,24 @@ namespace Repository.Repository.Implementation
 {
     public class EfCoreRepository<T>: IRepository<T> where T : class
     {
-        protected readonly AppDbContext Db;
+        protected readonly AppDbContext _context;
 
-        public EfCoreRepository(AppDbContext db)
+        public EfCoreRepository(AppDbContext context)
         {
-            Db = db;
+            _context = context;
         }
 
         public async Task<IList<T>> GetAllAsync()
         {
-            return await Db.Set<T>().ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
-
 
         public async Task<bool> AddAsync(T item)
         {
             try
             {
-                await Db.Set<T>().AddAsync(item);
-                Db.SaveChanges();
+                await _context.Set<T>().AddAsync(item);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -36,33 +37,29 @@ namespace Repository.Repository.Implementation
                 return false;
             }
         }
-        public async Task<bool> DeleteAsync(T item)
+        public async Task<bool> IsExistsAsync(Expression<Func<T, bool>> expression)
         {
-            try
-            {
-                Db.Set<T>().Remove(item);
-                await Db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return await _context.Set<T>().AnyAsync(expression);
         }
 
-        public bool UpdateAsync(T item)
+        Task IRepository<T>.AddAsync(T item)
         {
-            try
-            {
-                Db.Set<T>().Update(item);
-                Db.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            throw new NotImplementedException();
         }
 
-    }
+        public async Task<T> GetAsync(Expression<Func<T, bool>> expression, params string[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>().Where(expression);
+
+            if (includes != null && includes.Length > 0)
+            {
+                foreach (string include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
+    }   
 }

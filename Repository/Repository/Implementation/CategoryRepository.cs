@@ -15,11 +15,13 @@ namespace Repository.Repository.Implementation
         {
 
         }
-        public async Task<Category> FirstOrDefault(int? id)
+        public async Task<IList<Category>> GetCategoriesWithAttributes()
         {
-            return await appDbContext.Categories.Include(p=>p.Attributes).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Categories.Include(p => p.Attributes).ToListAsync();
         }
-        public AppDbContext appDbContext { get { return Db as AppDbContext; } }
+        public async Task<Category> GetCategoryById(int? id)
+        {
+            return await _context.Categories.Include(p=>p.Attributes).FirstOrDefaultAsync(p => p.Id == id);
+        }
     }
-
 }

@@ -1,4 +1,5 @@
 ﻿using DomainModels.PaymentModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Repository.Interfaces;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hesab.Az.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class HomeController : ControllerBase
@@ -14,29 +16,35 @@ namespace Hesab.Az.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ISliderService _sliderService;
         private readonly ICustomerService _customerService;
-        public HomeController(ICategoryService categoryService, ICategoryRepository category, ISliderService sliderService, ICustomerService customerService)
+        public HomeController(ICategoryService categoryService, ISliderService sliderService, ICustomerService customerService)
         {
             _categoryService = categoryService;
             _sliderService = sliderService;
             _customerService = customerService;
         }
-        [HttpGet()]
-        public async Task<IActionResult> GetServices()
+        [HttpGet("GetCategory")]
+        public async Task<IActionResult> GetCategory()
         {
             var services = await _categoryService.GetAllAsync();
             return Ok(services);
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory([FromRoute] int id)
+        [HttpGet("Attribute/{id}")]
+        public async Task<IActionResult> GetAttibute([FromRoute] int? id)
         {
-            var services = await _categoryService.GetCategory(id);
-            return Ok(services);
+            var category = await _categoryService.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return Ok(category);
         }
+        [HttpGet("GetSlider")]
         public async Task<IActionResult> GetSlider()
         {
-            var slider =await _sliderService.GetSlider();
+            var slider = await _sliderService.GetSlider();
             return Ok(slider);
         }
+        [HttpGet("GetCustomer")]
         public async Task<IActionResult> GetCustomer()
         {
             var customer = await _customerService.GetCustomers();
