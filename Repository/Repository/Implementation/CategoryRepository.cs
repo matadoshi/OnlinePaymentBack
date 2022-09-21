@@ -23,5 +23,6 @@ namespace Repository.Repository.Implementation
         {
             return await _context.Categories.Include(p=>p.Attributes).FirstOrDefaultAsync(p => p.Id == id);
         }
+
     }
 }

@@ -10,7 +10,10 @@ namespace Repository.Repository.Interfaces
     {
         Task<IList<T>> GetAllAsync();
         Task AddAsync(T item);
+        Task UpdateAsync(T item);
+        Task DeleteAsync(T item);
         Task<bool> IsExistsAsync(Expression<Func<T, bool>> expression);
-        Task<T> GetAsync(Expression<Func<T, bool>> expression, params string[] includes);
+        Task<T> GetById(int? id);
+
     }
 }

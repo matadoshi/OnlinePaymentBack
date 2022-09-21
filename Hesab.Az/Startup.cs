@@ -43,11 +43,9 @@ namespace Hesab.Az
             services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-
                 options.Lockout.AllowedForNewUsers = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
-
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
@@ -94,12 +92,11 @@ namespace Hesab.Az
             services.AddAutoMapper(typeof(MapperProfile));
             services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
             services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
-            services.AddScoped(typeof(IAuthRepository), typeof(AuthRepository));
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000", "http://localhost:3001");
+                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
                 });
             });
         }

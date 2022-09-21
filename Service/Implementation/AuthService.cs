@@ -1,9 +1,11 @@
-﻿using DomainModels.Entities;
+﻿using AutoMapper;
+using DomainModels.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Repository.Interfaces;
 using Service.DTO;
+using Service.Exceptions;
 using Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,18 +15,20 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.BaseModels
+namespace Service.Implementation
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly AppSettings _jwt;
-        public AuthService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOptions<AppSettings> jwt)
+        private readonly IMapper _mapper;
+        public AuthService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOptions<AppSettings> jwt, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwt = jwt.Value;
+            _mapper = mapper;
         }
 
         public async Task<LoginResponseDto> Authenticate(LoginDto model)
@@ -37,13 +41,16 @@ namespace Service.BaseModels
                 authenticationModel.Message = $"No Accounts Registered with {model.Email}.";
                 return authenticationModel;
             }
-            if (await _userManager.CheckPasswordAsync(user, model.Password))
+            if (await _userManager.CheckPasswordAsync(user, model.Password) && user.EmailConfirmed==true)
             {
                 authenticationModel.IsAuthenticated = true;
                 JwtSecurityToken jwtSecurityToken = await CreateJwtToken(user);
                 authenticationModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
                 authenticationModel.Email = user.Email;
+                authenticationModel.FullName = user.FullName;
+                authenticationModel.Phone = user.PhoneNumber;
                 authenticationModel.UserName = user.UserName;
+                authenticationModel.Gender = user.Gender;
                 var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
                 authenticationModel.Roles = rolesList.ToList();
                 return authenticationModel;
@@ -51,6 +58,43 @@ namespace Service.BaseModels
             authenticationModel.IsAuthenticated = false;
             authenticationModel.Message = $"Incorrect Credentials for user {user.Email}.";
             return authenticationModel;
+        }
+        public async Task Register(RegisterDto model)
+        {
+            User user = _mapper.Map<User>(model);
+            IdentityResult identityResult = await _userManager.CreateAsync(user, model.Password);
+            if (!identityResult.Succeeded)
+            {
+                throw new BadRequestException(identityResult.Errors.ToString());
+            }
+            await _userManager.AddToRoleAsync(user, "Member");
+        }
+        public async Task ResetPassword(ResetPasswordDto model)
+        {
+            User user = await _userManager.FindByIdAsync(model.Id);
+
+            if (model.CurrentPassword != null)
+            {
+                if (model.NewPassword == null)
+                {
+                    throw new BadRequestException("Password is required");
+                }
+
+                if (!await _userManager.CheckPasswordAsync(user, model.CurrentPassword))
+                {
+                    throw new BadRequestException("current Password is incorrect");
+                }
+
+                IdentityResult identity = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+                if (!identity.Succeeded)
+                {
+                    foreach (var item in identity.Errors)
+                    {
+                        throw new BadRequestException(item.Description.ToString());
+                    }
+                }
+            }
         }
         private async Task<JwtSecurityToken> CreateJwtToken(User user)
         {

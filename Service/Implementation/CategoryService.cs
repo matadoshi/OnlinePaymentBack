@@ -5,6 +5,7 @@ using Repository.DAL;
 using Repository.Repository.Implementation;
 using Repository.Repository.Interfaces;
 using Service.DTO;
+using Service.DTO.Category;
 using Service.Exceptions;
 using Service.Extentions;
 using Service.Interfaces;
@@ -15,7 +16,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.BaseModels
+namespace Service.Implementation
 {
     public class CategoryService:ICategoryService
     {
@@ -27,7 +28,7 @@ namespace Service.BaseModels
             _mapper = mapper;
         }
 
-        public async Task AddAsync(CategoryGetDto item)
+        public async Task AddAsync(CategoryPostDto item)
         {
             if (await _categoryRepository.IsExistsAsync(c => c.Name == item.Name))
             {
@@ -35,7 +36,7 @@ namespace Service.BaseModels
             }
 
             Category category = _mapper.Map<Category>(item);
-
+            category.CreatedAt = DateTime.UtcNow.AddHours(4);
             await _categoryRepository.AddAsync(category);
         }
         public async Task DeleteAsync(int? id)
@@ -55,12 +56,14 @@ namespace Service.BaseModels
             {
                 category.IsDeleted = true;
                 category.DeletedAt = CustomTime.currentDate;
+                category.UpdatedAt=CustomTime.currentDate;
             }
             else
             {
                 category.IsDeleted = false;
                 category.DeletedAt = null;
             }
+            await _categoryRepository.DeleteAsync(category);
         }
 
         public async Task<IList<CategoryGetDto>> GetAllAsync()
@@ -115,7 +118,9 @@ namespace Service.BaseModels
                 throw new AlreadyExistsException($"{item.Name} category already Exists");
             }
             category.Name = item.Name;
+            category.Image = item.Image;
             category.UpdatedAt = DateTime.UtcNow.AddHours(4);
+            await _categoryRepository.UpdateAsync(category);
         }
     }
 }

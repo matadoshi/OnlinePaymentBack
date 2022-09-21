@@ -11,5 +11,7 @@ namespace Service.Interfaces
     public interface IAuthService
     {
         Task<LoginResponseDto> Authenticate(LoginDto model);
+        Task Register(RegisterDto model);
+        Task ResetPassword(ResetPasswordDto model);
     }
 }

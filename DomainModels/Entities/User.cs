@@ -8,6 +8,7 @@ namespace DomainModels.Entities
     public class User:IdentityUser
     {
         public string FullName { get; set; }
+        public string Gender { get; set; }
         public bool IsBlocked { get; set; }
     }
 }

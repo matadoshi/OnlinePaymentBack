@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Service.DTO
+namespace Service.DTO.Category
 {
     public class CategoryGetDto
     {

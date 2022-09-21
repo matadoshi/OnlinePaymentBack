@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DomainModels.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repository.DAL;
 using Repository.Repository.Interfaces;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repository.Implementation
 {
-    public class EfCoreRepository<T>: IRepository<T> where T : class
+    public class EfCoreRepository<T> : IRepository<T> where T : BaseEntity
     {
         protected readonly AppDbContext _context;
 
@@ -21,45 +22,31 @@ namespace Repository.Repository.Implementation
 
         public async Task<IList<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().Where(m=>m.IsDeleted==false).ToListAsync();
         }
-
-        public async Task<bool> AddAsync(T item)
+        public async Task<T> GetById(int? id)
         {
-            try
-            {
-                await _context.Set<T>().AddAsync(item);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return await _context.Set<T>().FindAsync(id);
         }
         public async Task<bool> IsExistsAsync(Expression<Func<T, bool>> expression)
         {
             return await _context.Set<T>().AnyAsync(expression);
         }
-
-        Task IRepository<T>.AddAsync(T item)
+        public async Task AddAsync(T item)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<T> GetAsync(Expression<Func<T, bool>> expression, params string[] includes)
+        public async Task UpdateAsync(T item)
         {
-            IQueryable<T> query = _context.Set<T>().Where(expression);
-
-            if (includes != null && includes.Length > 0)
-            {
-                foreach (string include in includes)
-                {
-                    query = query.Include(include);
-                }
-            }
-
-            return await query.FirstOrDefaultAsync();
+            _context.Set<T>().Update(item);
+            await _context.SaveChangesAsync();
         }
-    }   
+
+        public async Task DeleteAsync(T item)
+        {
+            await _context.SaveChangesAsync();
+        }
+    }
 }

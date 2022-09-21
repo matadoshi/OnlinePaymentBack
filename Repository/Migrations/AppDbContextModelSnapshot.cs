@@ -110,6 +110,9 @@ namespace Repository.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("bit");
 
@@ -166,7 +169,7 @@ namespace Repository.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -359,9 +362,7 @@ namespace Repository.Migrations
                 {
                     b.HasOne("DomainModels.PaymentModels.Category", "Category")
                         .WithMany("Attributes")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

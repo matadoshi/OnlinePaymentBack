@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Service.BaseModels;
+using Service.Implementation;
 using Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,7 @@ namespace Service
             services.AddScoped<ISliderService, SliderService>();
             services.AddScoped<ICustomerService,CustomerService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IEmailService,EmailService>();
             return services;
         }
     }

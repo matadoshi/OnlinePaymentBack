@@ -6,9 +6,8 @@ using Repository.Repository.Interfaces;
 using Service.Interfaces;
 using System.Threading.Tasks;
 
-namespace Hesab.Az.Controllers
+namespace Hesab.Az.App.Client.Controllers
 {
-    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class HomeController : ControllerBase
@@ -41,7 +40,7 @@ namespace Hesab.Az.Controllers
         [HttpGet("GetSlider")]
         public async Task<IActionResult> GetSlider()
         {
-            var slider = await _sliderService.GetSlider();
+            var slider = await _sliderService.GetAllAsync();
             return Ok(slider);
         }
         [HttpGet("GetCustomer")]
