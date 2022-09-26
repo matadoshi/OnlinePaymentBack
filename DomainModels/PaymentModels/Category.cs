@@ -8,6 +8,5 @@ namespace DomainModels.PaymentModels
     public class Category:BaseEntity
     {
         public List<Attributes> Attributes { get; set; }
-
     }
 }

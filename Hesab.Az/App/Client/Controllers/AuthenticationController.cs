@@ -58,10 +58,5 @@ namespace Hesab.Az.App.Client.Controllers
             await _userManager.ConfirmEmailAsync(user, token);
             return Ok();
         }
-        [HttpPost("EditProfile")]
-        public async Task<IActionResult> EditProfile()
-        {
-
-        }
     }
 }

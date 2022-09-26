@@ -16,6 +16,7 @@ namespace Service
             services.AddScoped<ICustomerService,CustomerService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailService,EmailService>();
+            services.AddTransient<IPaymentService, PaymentService>();
             return services;
         }
     }

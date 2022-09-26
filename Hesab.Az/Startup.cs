@@ -16,6 +16,8 @@ using Repository.DAL;
 using Repository.Repository.Implementation;
 using Repository.Repository.Interfaces;
 using Service;
+using Service.Implementation;
+using Service.Interfaces;
 using Service.Mapper;
 using System;
 using System.Collections.Generic;
@@ -27,9 +29,11 @@ namespace Hesab.Az
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private IWebHostEnvironment _env;
+        public Startup(IConfiguration configuration,IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
