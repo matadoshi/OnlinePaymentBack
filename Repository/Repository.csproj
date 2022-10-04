@@ -5,6 +5,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20220927051827_MobileCategoryWithAttributesAdded.cs" />
+    <Compile Remove="Migrations\20220927051827_MobileCategoryWithAttributesAdded.Designer.cs" />
+    <Compile Remove="Migrations\20220927052149_MobileCategoryWithAttributesAdded1.cs" />
+    <Compile Remove="Migrations\20220927052149_MobileCategoryWithAttributesAdded1.Designer.cs" />
+    <Compile Remove="Migrations\20220927052742_MobileAttributesAdded.cs" />
+    <Compile Remove="Migrations\20220927052742_MobileAttributesAdded.Designer.cs" />
+    <Compile Remove="Migrations\20220927053422_MobileAttributesAdded.cs" />
+    <Compile Remove="Migrations\20220927053422_MobileAttributesAdded.Designer.cs" />
+    <Compile Remove="Migrations\20221002190250_AddCardTable.cs" />
+    <Compile Remove="Migrations\20221002190250_AddCardTable.Designer.cs" />
+    <Compile Remove="Migrations\20221002190424_AddCardTable.cs" />
+    <Compile Remove="Migrations\20221002190424_AddCardTable.Designer.cs" />
+    <Compile Remove="Migrations\20221002191319_ManyToManyRelationCardUSer.cs" />
+    <Compile Remove="Migrations\20221002191319_ManyToManyRelationCardUSer.Designer.cs" />
+    <Compile Remove="Migrations\20221004072413_Com1.cs" />
+    <Compile Remove="Migrations\20221004072413_Com1.Designer.cs" />
+    <Compile Remove="Migrations\20221004114530_Commit4.cs" />
+    <Compile Remove="Migrations\20221004114530_Commit4.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.29" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.29" />

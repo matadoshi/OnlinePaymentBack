@@ -29,14 +29,14 @@ namespace Service.Implementation
         {
             _hostEnvironment = hostEnvironment;
 
-            _merchant = "E2260011";
+            _merchant = "E1000010";
             _currency = "944";
             //_pingUrl = "https://otelx.az/";
             _pingUrl = "https://localhost:44319/";
-            _url = "https://e-commerce.kapitalbank.az:5443/Exec";
+            _url = "https://tstpg.kapitalbank.az:5443/exec";
             _client = new RestClient(_url);
 
-            var certPath = Path.Combine(_hostEnvironment.WebRootPath, "certificates/otelx.pfx");
+            var certPath = Path.Combine(_hostEnvironment.WebRootPath, "certificates/otelx-dev.pfx");
 
 
             var certificates = new X509Certificate2(File.ReadAllBytes(certPath), _merchant, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Repository.Interfaces;
 using Service.DTO;
+using Service.DTO.Account;
 using Service.Exceptions;
 using Service.Interfaces;
 using System;
@@ -17,13 +18,13 @@ using System.Threading.Tasks;
 
 namespace Service.Implementation
 {
-    public class AuthService : IAuthService
+    public class AccountService : IAccountService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly AppSettings _jwt;
         private readonly IMapper _mapper;
-        public AuthService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOptions<AppSettings> jwt, IMapper mapper)
+        public AccountService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOptions<AppSettings> jwt, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -31,7 +32,7 @@ namespace Service.Implementation
             _mapper = mapper;
         }
 
-        public async Task<LoginResponseDto> Authenticate(LoginDto model)
+        public async Task<LoginResponseDto> Login(LoginDto model)
         {
             var authenticationModel = new LoginResponseDto();
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -41,15 +42,18 @@ namespace Service.Implementation
                 authenticationModel.Message = $"No Accounts Registered with {model.Email}.";
                 return authenticationModel;
             }
-            if (await _userManager.CheckPasswordAsync(user, model.Password) && user.EmailConfirmed==true)
+            if (await _userManager.CheckPasswordAsync(user, model.Password) && user.EmailConfirmed == true)
             {
                 authenticationModel.IsAuthenticated = true;
                 JwtSecurityToken jwtSecurityToken = await CreateJwtToken(user);
                 authenticationModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
                 authenticationModel.Email = user.Email;
+                authenticationModel.Id = user.Id;
+                authenticationModel.Image = user.Image;
                 authenticationModel.FullName = user.FullName;
                 authenticationModel.Phone = user.PhoneNumber;
                 authenticationModel.UserName = user.UserName;
+                authenticationModel.Birthday = user.Birthday;
                 authenticationModel.Gender = user.Gender;
                 var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
                 authenticationModel.Roles = rolesList.ToList();
@@ -79,7 +83,10 @@ namespace Service.Implementation
                 {
                     throw new BadRequestException("Password is required");
                 }
-
+                if (model.NewPassword != model.ConfirmPassword)
+                {
+                    throw new BadRequestException("New Password is not matched");
+                }
                 if (!await _userManager.CheckPasswordAsync(user, model.CurrentPassword))
                 {
                     throw new BadRequestException("current Password is incorrect");
@@ -96,7 +103,7 @@ namespace Service.Implementation
                 }
             }
         }
-        private async Task<JwtSecurityToken> CreateJwtToken(User user)
+        public async Task<JwtSecurityToken> CreateJwtToken(User user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
@@ -112,6 +119,7 @@ namespace Service.Implementation
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id)
             }
+            
             .Union(userClaims)
             .Union(roleClaims);
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
@@ -120,9 +128,27 @@ namespace Service.Implementation
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwt.DurationInMinutes),
+                expires: DateTime.UtcNow.AddMinutes(1),
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
+        }
+        public async Task UpdateAsync(AccountUpdateDto model)
+        {
+            User user = await _userManager.FindByIdAsync(model.Id);
+
+            user.FullName = model.Fullname;
+            user.Gender = model.Gender;
+            user.Birthday = model.Birthday;
+            user.Id = model.Id;
+            IdentityResult identity = await _userManager.UpdateAsync(user);
+
+            if (!identity.Succeeded)
+            {
+                foreach (var item in identity.Errors)
+                {
+                    throw new BadRequestException(item.Description.ToString());
+                }
+            }
         }
     }
 }

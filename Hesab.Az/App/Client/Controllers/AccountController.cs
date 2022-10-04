@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTO;
+using Service.DTO.Account;
 using Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace Hesab.Az.App.Client.Controllers
 {
-    [Route("[controller]")]
+    [Route("[Controller]")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AccountController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IAccountService _accService;
         private readonly IEmailService _emailService;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
 
-        public AuthenticationController(IAuthService authService, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IEmailService emailService)
+        public AccountController(IAccountService authService, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IEmailService emailService)
         {
-            _authService = authService;
+            _accService = authService;
             _roleManager = roleManager;
             _userManager = userManager;
             _emailService = emailService;
@@ -30,7 +31,7 @@ namespace Hesab.Az.App.Client.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginDto model)
         {
-            var user = _authService.Authenticate(model);
+            var user = _accService.Login(model);
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
             return Ok(user);
@@ -38,21 +39,27 @@ namespace Hesab.Az.App.Client.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody]RegisterDto model)
         {
-            await _authService.Register(model);
+            await _accService.Register(model);
             User user = await _userManager.FindByEmailAsync(model.Email);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var link = Url.Action("ConfirmEmail", "Authentication", new { userId = user.Id, token = code }, Request.Scheme, Request.Host.ToString());
+            var link = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = code }, Request.Scheme, Request.Host.ToString());
             _emailService.SenderEmail(model, link);
             return Ok();
         }
-        [HttpPut("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDto model)
+        [HttpPost("EditProfile")]
+        public async Task<IActionResult> Edit([FromBody] AccountUpdateDto model)
         {
-            await _authService.ResetPassword(model);
+            await _accService.UpdateAsync(model);
+            return NoContent();
+        }
+        [HttpPut("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromForm]ResetPasswordDto model)
+        {
+            await _accService.ResetPassword(model);
             return NoContent();
         }
         [HttpGet("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        private async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             User user = await _userManager.FindByIdAsync(userId);
             await _userManager.ConfirmEmailAsync(user, token);

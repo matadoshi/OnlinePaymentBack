@@ -27,7 +27,6 @@ namespace Service.Implementation
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
-
         public async Task AddAsync(CategoryPostDto item)
         {
             if (await _categoryRepository.IsExistsAsync(c => c.Name == item.Name))
@@ -36,7 +35,6 @@ namespace Service.Implementation
             }
 
             Category category = _mapper.Map<Category>(item);
-            category.CreatedAt = DateTime.UtcNow.AddHours(4);
             await _categoryRepository.AddAsync(category);
         }
         public async Task DeleteAsync(int? id)
@@ -65,19 +63,13 @@ namespace Service.Implementation
             }
             await _categoryRepository.DeleteAsync(category);
         }
-
         public async Task<IList<CategoryGetDto>> GetAllAsync()
         {
             var categories = await _categoryRepository.GetAllAsync();
             var categoriesDto = _mapper.Map<IList<CategoryGetDto>>(categories);
+
             return categoriesDto;
         }
-
-        public Task<CategoryGetDto> GetAsync(Expression<Func<CategoryGetDto, bool>> expression, params string[] includes)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IList<CategoryGetDto>> GetCategoriesWithAttributes()
         {
             var categories = await _categoryRepository.GetCategoriesWithAttributes();
@@ -88,14 +80,9 @@ namespace Service.Implementation
         {
             Category category =await _categoryRepository.GetCategoryById(id);
             var categoriesDto = _mapper.Map<CategoryGetDto>(category);
+
             return categoriesDto;
         }
-
-        public Task<bool> IsExistsAsync(Expression<Func<CategoryGetDto, bool>> expression)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task UpdateAsync(int? id,CategoryPutDto item)
         {
             if (id == null)
@@ -122,5 +109,6 @@ namespace Service.Implementation
             category.UpdatedAt = DateTime.UtcNow.AddHours(4);
             await _categoryRepository.UpdateAsync(category);
         }
+
     }
 }

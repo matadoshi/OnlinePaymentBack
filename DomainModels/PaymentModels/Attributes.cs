@@ -9,5 +9,9 @@ namespace DomainModels.PaymentModels
     {
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+        public string SubscriberCode { get; set; }
+        public string PhoneNumber { get; set; }
+        public string FIN { get; set; }
+        public string AccountNumber { get; set; }
     }
 }

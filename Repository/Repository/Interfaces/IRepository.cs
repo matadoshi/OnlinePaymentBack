@@ -14,6 +14,7 @@ namespace Repository.Repository.Interfaces
         Task DeleteAsync(T item);
         Task<bool> IsExistsAsync(Expression<Func<T, bool>> expression);
         Task<T> GetById(int? id);
+        Task<List<T>> GetAsync(Expression<Func<T, bool>> expression, params string[] includes);
 
     }
 }

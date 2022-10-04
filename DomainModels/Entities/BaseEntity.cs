@@ -11,7 +11,7 @@ namespace DomainModels.Entities
         public string Name { get; set; }
         public string Image { get; set; }
         public bool IsDeleted { get; set; }
-        public Nullable<DateTime> CreatedAt { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
         public Nullable<DateTime> UpdatedAt { get; set; }
         public Nullable<DateTime> DeletedAt { get;set;}
     }

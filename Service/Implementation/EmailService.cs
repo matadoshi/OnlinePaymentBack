@@ -18,7 +18,6 @@ namespace Service.Implementation
             message.From.Add(new MailboxAddress("Hesab.AZ", "juanmvcproject@gmail.com"));
             message.To.Add(new MailboxAddress(model.FullName, model.Email));
             message.Subject = "Confirmation Email";
-
             string emailbody = "<a href='[URL]'>Confirmation Link</a>".Replace("[URL]", link);
             using var smtp = new SmtpClient();
             message.Body = new TextPart(TextFormat.Html) { Text = emailbody };

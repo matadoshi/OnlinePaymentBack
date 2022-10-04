@@ -31,7 +31,6 @@ namespace Service.Implementation
             }
 
             Slider slider = _mapper.Map<Slider>(item);
-            slider.CreatedAt = DateTime.UtcNow.AddHours(4);
             await _sliderRepository.AddAsync(slider);
         }
 

@@ -1,10 +1,12 @@
 ﻿using DomainModels.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Hesab.Az.App.Client.Controllers
@@ -14,31 +16,40 @@ namespace Hesab.Az.App.Client.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IAttributeService _attributeService;
         private readonly IPaymentService _paymentService;
         public static string invitationToken;
         private static int reservationId;
         private static string orderId;
         private static string sessionId;
         private static decimal amount;
-        public PaymentController(ICategoryService categoryService, IPaymentService paymentService)
+        public PaymentController(ICategoryService categoryService, IPaymentService paymentService, IAttributeService attributeService)
         {
             _categoryService = categoryService;
             _paymentService = paymentService;
+            _attributeService = attributeService;
         }
         [HttpGet("Categories")]
         public async Task<IActionResult> Categories()
         {
             return Ok(await _categoryService.GetCategoriesWithAttributes());
         }
-        [HttpPost("Details")]
-        public async Task<IActionResult> Details([FromForm]int? id)
+        [HttpPost("pay")]
+        public async Task<IActionResult> Pay([FromForm]decimal amount, [FromForm] int attributeId)
         {
-            var category = await _categoryService.GetCategoryById(id);
-            if (category == null)
+            var attribute = await _attributeService.GetDataForAttributes(attributeId);
+            if (attribute == null) return NotFound();
+
+            var data = await _paymentService.CreatePayment(new CreatePaymentRequest
             {
-                return NotFound();
-            }
-            return Ok(category);
+                Amount = amount * 100,
+                LanguageCode = "AZ",
+                Description = "Payment",
+                Platform = attribute.Name
+            });
+            var returnUrl = data.Response.Order.Url + "?ORDERID=" + data.Response.Order.OrderId + "&SESSIONID=" + data.Response.Order.SessionId;
+
+            return Ok(returnUrl);
         }
         [HttpPost("Approve")]
         public async Task<IActionResult> Approve()
@@ -61,7 +72,7 @@ namespace Hesab.Az.App.Client.Controllers
                         Amount = amount,
                         StatusId = data.Response.Status,
                         Status = data.Response.Order.OrderStatus,
-                        CreatedAt = DateTime.Now
+                        CreatedDate = DateTime.Now
                     };
                     await _paymentService.AddAsync(transaction);
                 }

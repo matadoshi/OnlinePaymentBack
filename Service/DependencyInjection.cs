@@ -12,9 +12,13 @@ namespace Service
         public static IServiceCollection AddServiceLayer(this IServiceCollection services)
         {
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IAttributeService, AttributeService>();
             services.AddScoped<ISliderService, SliderService>();
             services.AddScoped<ICustomerService,CustomerService>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IInvoiceService,InvoiceService>();
+            services.AddScoped<ICardService,CardService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService,EmailService>();
             services.AddTransient<IPaymentService, PaymentService>();
             return services;

@@ -14,10 +14,13 @@ namespace Repository.DAL
         {
 
         }
-        public DbSet<Attributes> Attributes { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Slider> Sliders{ get; set; }
         public DbSet<Customer> Customers{ get; set; }
+        public DbSet<Attributes> Attributes{ get; set; }
+        public DbSet<Card> Cards { get; set; }
+        public DbSet<Invoice> Invoices{ get; set; }
+        public DbSet<Transaction> Transactions{ get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
