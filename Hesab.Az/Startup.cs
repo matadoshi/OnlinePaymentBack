@@ -1,4 +1,5 @@
 using DomainModels.Entities;
+using Hesab.Az.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +43,7 @@ namespace Hesab.Az
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddControllers();
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -86,6 +88,7 @@ namespace Hesab.Az
                 });
             });
             services.AddServiceLayer();
+            services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), builder =>
@@ -101,7 +104,6 @@ namespace Hesab.Az
             services.AddAutoMapper(typeof(MapperProfile));
             services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
             services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
-            services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(ICardRepository), typeof(CardRepository));
             services.AddScoped(typeof(IAttributeRepository), typeof(AttributeRepository));
             services.AddScoped(typeof(IInvoiceRepository), typeof(InvoiceRepository));
@@ -109,7 +111,10 @@ namespace Hesab.Az
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000", "http://localhost:3001");
+                    policy.WithOrigins("http://localhost:3000", "http://localhost:3001", "https://hesabaz.netlify.app")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
                 });
             });
         }
@@ -127,7 +132,6 @@ namespace Hesab.Az
             });
             app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -135,6 +139,7 @@ namespace Hesab.Az
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }

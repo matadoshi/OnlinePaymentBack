@@ -22,5 +22,10 @@ namespace Repository.Repository.Implementation
             var invoices = await _context.Invoices.Include(r=>r.User).Include(r=>r.Transaction).Where(u => u.UserId == user.Id).ToListAsync();
             return invoices;
         }
+        public async Task<List<Invoice>> GetInvoicesAll()
+        {
+            var invoices = await _context.Invoices.Include(r => r.User).Include(r => r.Transaction).ToListAsync();
+            return invoices;
+        }
     }
 }

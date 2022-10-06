@@ -17,6 +17,6 @@ namespace Service.Interfaces
         Task ResetPassword(ResetPasswordDto model);
         Task UpdateAsync(AccountUpdateDto model);
         Task<JwtSecurityToken> CreateJwtToken(User user);
-
+        Task<JwtSecurityToken> LoginForAdmin(LoginDto model);
     }
 }

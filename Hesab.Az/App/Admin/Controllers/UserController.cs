@@ -1,6 +1,8 @@
 ﻿using DomainModels.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repository.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,16 +15,15 @@ namespace Hesab.Az.App.Admin.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _repo;
-
-        public UserController(IUserRepository repo)
+        private readonly UserManager<User> _userManager;
+        public UserController(UserManager<User> userManager)
         {
-            _repo = repo;
+            _userManager = userManager;
         }
-        [HttpGet("users")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        [HttpGet("getUsers")]
+        public async Task<ActionResult<List<User>>> GetUsers()
         {
-            return await _repo.GetUsers();
+            return await _userManager.Users.ToListAsync();
         }
     }
 }

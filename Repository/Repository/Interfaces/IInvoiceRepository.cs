@@ -9,5 +9,7 @@ namespace Repository.Repository.Interfaces
     public interface IInvoiceRepository
     {
         Task<List<Invoice>> GetInvoices(string id);
+        Task<List<Invoice>> GetInvoicesAll();
+
     }
 }

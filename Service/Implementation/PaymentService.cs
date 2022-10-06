@@ -1,15 +1,18 @@
-﻿using DomainModels.Entities;
+﻿using AutoMapper;
+using DomainModels.Entities;
+using DomainModels.Enum;
 using Microsoft.AspNetCore.Hosting;
 using Repository.Repository.Interfaces;
 using RestSharp;
 using RestSharp.Deserializers;
+using Service.DTO.Payment;
 using Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;  
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Service.Implementation
@@ -24,15 +27,16 @@ namespace Service.Implementation
         private readonly RestClient _client;
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly IRepository<Transaction> _repository;
+        private readonly IRepository<Invoice> _invoiceRepository;
+        private readonly IMapper _mapper;
 
-        public PaymentService(IWebHostEnvironment hostEnvironment, IRepository<Transaction> repository)
+        public PaymentService(IWebHostEnvironment hostEnvironment, IRepository<Transaction> repository, IRepository<Invoice> invoiceRepository, IMapper mapper)
         {
             _hostEnvironment = hostEnvironment;
 
             _merchant = "E1000010";
             _currency = "944";
-            //_pingUrl = "https://otelx.az/";
-            _pingUrl = "https://localhost:44319/";
+            _pingUrl = "https://localhost:44319/payment/approve";
             _url = "https://tstpg.kapitalbank.az:5443/exec";
             _client = new RestClient(_url);
 
@@ -45,6 +49,8 @@ namespace Service.Implementation
                 certificates
             };
             _repository = repository;
+            _invoiceRepository = invoiceRepository;
+            _mapper = mapper;
         }
 
         public async Task AddAsync(Transaction model)
@@ -122,6 +128,19 @@ namespace Service.Implementation
             var deserializer = new XmlDeserializer();
             return deserializer.Deserialize<PaymentOrderStatusResponseTkkpg>(response);
         }
+
+        public async Task PostAsync(PaymentPostDto model)
+        {
+            Invoice invoice = _mapper.Map<Invoice>(model);
+
+            invoice.Card.CVV = model.Card.CVV;
+            invoice.User.FullName = model.FullName;
+            invoice.Card.Number = model.Card.Number;
+            invoice.Card.ExpirationDate = model.Card.ExpirationDate;
+            invoice.Transaction.OrderStatus = OrderStatus.Pending;
+            await _invoiceRepository.AddAsync(invoice);
+        }
+
     }
 
 }

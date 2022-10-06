@@ -128,7 +128,7 @@ namespace Service.Implementation
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(1),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
         }
@@ -137,6 +137,8 @@ namespace Service.Implementation
             User user = await _userManager.FindByIdAsync(model.Id);
 
             user.FullName = model.Fullname;
+            user.Image = model.Image;
+            user.PhoneNumber = model.Phone;
             user.Gender = model.Gender;
             user.Birthday = model.Birthday;
             user.Id = model.Id;
@@ -149,6 +151,25 @@ namespace Service.Implementation
                     throw new BadRequestException(item.Description.ToString());
                 }
             }
+        }
+        public async Task<JwtSecurityToken> LoginForAdmin(LoginDto model)
+        {
+            User appUser = await _userManager.FindByEmailAsync(model.Email);
+            if (!await _userManager.IsInRoleAsync(appUser, "Member"))
+            {
+                if (appUser == null)
+                {
+                    throw new Exception("Email or password incorrect");
+                }
+                if (!await _userManager.CheckPasswordAsync(appUser, model.Password))
+                {
+                    throw new Exception("Email or password incorrect");
+                }
+
+                return await CreateJwtToken(appUser);
+            }
+
+            throw new Exception("Are you member???");
         }
     }
 }

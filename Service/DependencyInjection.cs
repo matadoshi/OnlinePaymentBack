@@ -18,7 +18,6 @@ namespace Service
             services.AddScoped<IInvoiceService,InvoiceService>();
             services.AddScoped<ICardService,CardService>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService,EmailService>();
             services.AddTransient<IPaymentService, PaymentService>();
             return services;

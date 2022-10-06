@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTO.Category;
 using Service.Interfaces;
@@ -8,6 +9,7 @@ namespace Hesab.Az.App.Areas.Admin.Controllers
 {
     [Route("admin/[controller]")]
     [ApiController]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -34,8 +36,8 @@ namespace Hesab.Az.App.Areas.Admin.Controllers
             await _categoryService.UpdateAsync(id, model);
             return StatusCode(204);
         }
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int? id)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete([FromRoute]int? id)
         {
             await _categoryService.DeleteAsync(id);
             return Ok();

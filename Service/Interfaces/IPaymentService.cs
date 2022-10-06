@@ -1,4 +1,5 @@
 ﻿using DomainModels.Entities;
+using Service.DTO.Payment;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,11 +12,12 @@ namespace Service.Interfaces
         {
             Task<PaymentOrderResponseTkkpg> CreatePayment(CreatePaymentRequest createPayment);
             Task<PaymentOrderStatusResponseTkkpg> GetPaymentStatus(PaymentStatusRequest paymentStatusRequest);
-        Task AddAsync(Transaction model);
+            Task AddAsync(Transaction model);
+        Task PostAsync(PaymentPostDto model);
         }
 
-        #region New payment region
-        public class CreatePaymentRequest
+    #region New payment region
+    public class CreatePaymentRequest
         {
             public string Platform;
             public string LanguageCode { get; set; }

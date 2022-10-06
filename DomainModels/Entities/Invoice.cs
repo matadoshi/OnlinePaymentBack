@@ -11,6 +11,7 @@ namespace DomainModels.Entities
         public Attributes Attribute{ get; set; }
         public bool IsPaid { get; set; }
         public string UserId{ get; set; }
+        public Card Card { get; set; }
         public User User { get; set; }
         public DateTime Date { get; set; }
         public Transaction Transaction{ get; set; }

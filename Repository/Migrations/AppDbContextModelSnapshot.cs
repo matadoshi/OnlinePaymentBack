@@ -106,6 +106,9 @@ namespace Repository.Migrations
                     b.Property<int>("AttributeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CardId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -136,6 +139,8 @@ namespace Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AttributeId");
+
+                    b.HasIndex("CardId");
 
                     b.HasIndex("UserId");
 
@@ -211,6 +216,9 @@ namespace Repository.Migrations
 
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -531,6 +539,10 @@ namespace Repository.Migrations
                         .HasForeignKey("AttributeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DomainModels.Entities.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId");
 
                     b.HasOne("DomainModels.Entities.User", "User")
                         .WithMany("Invoices")

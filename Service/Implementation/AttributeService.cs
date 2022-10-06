@@ -19,11 +19,12 @@ namespace Service.Implementation
             _mapper = mapper;
         }
 
-        public async Task<AttributesGetDto> GetDataForAttributes(int? id)
-        {
-            var attributes = await _repo.GetDataForAttributes(id);
-            var attributeDto = _mapper.Map<AttributesGetDto>(attributes);
-            return attributeDto;
-        }
+            public async Task<AttributesGetDto> GetDataForAttributes(int? id)
+            {
+                var attributes = await _repo.GetDataForAttributes(id);
+            
+                var attributeDto = _mapper.Map<AttributesGetDto>(attributes);
+                return attributeDto;
+            }
     }
 }

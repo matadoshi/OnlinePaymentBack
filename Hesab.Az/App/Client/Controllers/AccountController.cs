@@ -43,23 +43,27 @@ namespace Hesab.Az.App.Client.Controllers
             User user = await _userManager.FindByEmailAsync(model.Email);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var link = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = code }, Request.Scheme, Request.Host.ToString());
-            _emailService.SenderEmail(model, link);
+            await _emailService.SendEmailAsync(model.Email,null, link,null);
             return Ok();
         }
-        [HttpPost("EditProfile")]
-        public async Task<IActionResult> Edit([FromBody] AccountUpdateDto model)
+        [HttpPut("ProfileEdit")]
+        public async Task<IActionResult> Edit([FromForm] AccountUpdateDto model)
         {
+            if (model == null)
+            {
+                return BadRequest();
+            }
             await _accService.UpdateAsync(model);
-            return NoContent();
+            return Ok();
         }
         [HttpPut("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromForm]ResetPasswordDto model)
         {
             await _accService.ResetPassword(model);
-            return NoContent();
+            return Ok();
         }
         [HttpGet("ConfirmEmail")]
-        private async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             User user = await _userManager.FindByIdAsync(userId);
             await _userManager.ConfirmEmailAsync(user, token);

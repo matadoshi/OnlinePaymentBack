@@ -16,11 +16,14 @@ namespace Service.Implementation
         {
             _repo = repo;
         }
-
         public Task<List<Invoice>> GetInvoices(string id)
         {
             var invoices = _repo.GetInvoices(id);
             return invoices;
+        }
+        public Task<List<Invoice>> GetInvoicesAll()
+        {
+            return _repo.GetInvoicesAll();
         }
     }
 }

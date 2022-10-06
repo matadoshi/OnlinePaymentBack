@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repository.Implementation
 {
-    public class EfCoreRepository<T> : IRepository<T> where T :class
+    public class EfCoreRepository<T> : IRepository<T> where T :BaseEntity
     {
         protected readonly AppDbContext _context;
 
@@ -22,7 +22,7 @@ namespace Repository.Repository.Implementation
 
         public async Task<IList<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().Where(m=>m.IsDeleted==false).ToListAsync();
         }
         public async Task<List<T>> GetAsync(Expression<Func<T, bool>> expression, params string[] includes)
         {

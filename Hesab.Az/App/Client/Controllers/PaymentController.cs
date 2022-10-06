@@ -48,7 +48,6 @@ namespace Hesab.Az.App.Client.Controllers
                 Platform = attribute.Name
             });
             var returnUrl = data.Response.Order.Url + "?ORDERID=" + data.Response.Order.OrderId + "&SESSIONID=" + data.Response.Order.SessionId;
-
             return Ok(returnUrl);
         }
         [HttpPost("Approve")]

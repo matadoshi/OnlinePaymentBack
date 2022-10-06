@@ -1,4 +1,5 @@
 ﻿using DomainModels.PaymentModels;
+using Microsoft.EntityFrameworkCore;
 using Repository.DAL;
 using Repository.Repository.Interfaces;
 using System;
@@ -16,7 +17,8 @@ namespace Repository.Repository.Implementation
         }
         public async Task<Attributes> GetDataForAttributes(int? id)
         {
-            return await _context.Attributes.FindAsync(id);
+            var attributes= await _context.Attributes.Include(r=>r.Category).ToListAsync();
+            return attributes.Find(r => r.Id == id);
         }
     }
 }

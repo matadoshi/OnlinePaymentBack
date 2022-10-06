@@ -9,5 +9,7 @@ namespace Service.Interfaces
     public interface IInvoiceService
     {
         Task<List<Invoice>> GetInvoices(string id);
+        Task<List<Invoice>> GetInvoicesAll();
+
     }
 }
